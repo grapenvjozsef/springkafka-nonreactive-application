@@ -28,14 +28,17 @@ public class MessageService {
     }
 
     /** Üzenet küldése */
-    public void publish(final MessageDto messageDto) {
+    public boolean publish(final MessageDto messageDto) {
         log.debug("Publishing message ....Topic.: " + kafkaTopic);
         try {
             kafkaTemplate.send(kafkaTopic, objectMapper.writeValueAsString(messageDto));
             log.info("Published events ...");
         } catch (JsonProcessingException e) {
             log.error("Couldn't parse messageDto to string. Error.: " + e.getLocalizedMessage());
+            return false;
         }
+
+        return true;
     }
 
     /** Elküldött üzenet kiolvasása és visszigazolása */

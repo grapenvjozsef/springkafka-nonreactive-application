@@ -19,7 +19,6 @@ public class BaseApi {
 
     @PostMapping("/publish")
     public boolean publishToKafka(@RequestBody final MessageDto message) {
-        kafkaProducerService.publish(message);
-        return true;
+        return kafkaProducerService.publish(message);
     }
 }
