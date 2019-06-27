@@ -23,6 +23,8 @@ public class KafkaProducerConfig {
     public ProducerFactory<String, String> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        // Minden üzenethez szükséges egy confirmolás
+        configProps.put(ProducerConfig.ACKS_CONFIG, "all");
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return new DefaultKafkaProducerFactory<>(configProps);
@@ -33,6 +35,7 @@ public class KafkaProducerConfig {
         return new KafkaTemplate(producerFactory());
     }
 
+    // DeadLetter queue: a hibás üzeneteket ide továbbitjük tovább, hogy ne blokkolja az application feldolgozását
     @Bean("dead_letter_template")
     public KafkaTemplate<Object, Object> deadLetterTemplate() {
         return new KafkaTemplate(producerFactory());

@@ -27,6 +27,7 @@ public class MessageService {
         this.objectMapper = objectMapper;
     }
 
+    /** Üzenet küldése */
     public void publish(final MessageDto messageDto) {
         log.debug("Publishing message ....Topic.: " + kafkaTopic);
         try {
@@ -37,6 +38,7 @@ public class MessageService {
         }
     }
 
+    /** Elküldött üzenet kiolvasása és visszigazolása */
     @KafkaListener(topics="#{'${kafka.topic}'}", containerFactory = "kafkaListenerContainerFactory")
     public void processMessage(@Payload final String payload, final Acknowledgment acknowledgment) {
         log.info("Received content = " + payload);

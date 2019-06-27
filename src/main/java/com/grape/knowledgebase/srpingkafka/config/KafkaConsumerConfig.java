@@ -42,7 +42,9 @@ public class KafkaConsumerConfig {
             @Qualifier("dead_letter_template") final KafkaTemplate<Object, Object> template) {
         final ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
+        // A kiolvasott és feldolgozott adatok visszaigazolása queue felé
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
+        // Error eset lekezelése, 3 db probálkozás után DeadLetter queue felé dobás. DeadLetter queue: <topicname>.DLT
         factory.setErrorHandler(new SeekToCurrentErrorHandler(
                 new DeadLetterPublishingRecoverer(template), 3)
         );
